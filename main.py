@@ -30,8 +30,12 @@ class Record:
         self.name = Name(name)
         self.phones = []
 
+    # Check if phone is an object of Phone class or a string and return string
+    def _get_phone_value(self, phone):
+        return phone.value if isinstance(phone, Phone) else phone
+
     def add_phone(self, phone):
-        phone_value = phone.value if isinstance(phone, Phone) else phone
+        phone_value = self._get_phone_value(phone)
 
         for p in self.phones:
             if p.value == phone_value:
@@ -40,7 +44,7 @@ class Record:
         self.phones.append(Phone(phone))
 
     def remove_phone(self, phone):
-        phone_value = phone.value if isinstance(phone, Phone) else phone
+        phone_value = self._get_phone_value(phone)
 
         for p in self.phones:
             if p.value == phone_value:
@@ -50,8 +54,11 @@ class Record:
         raise ValueError(f"Phone {phone_value} not found in record") 
     
     def edit_phone(self, old_phone, new_phone):
-        old_phone_value = old_phone.value if isinstance(old_phone, Phone) else old_phone
-        new_phone_value = new_phone.value if isinstance(new_phone, Phone) else new_phone
+        old_phone_value = self._get_phone_value(old_phone)
+        new_phone_value = self._get_phone_value(new_phone)
+
+        if old_phone_value == new_phone_value:
+            raise ValueError("New phone number must be different from the old one")  
 
         for i, p in enumerate(self.phones):
             if p.value == old_phone_value:
@@ -61,7 +68,7 @@ class Record:
         raise ValueError(f"Phone {old_phone_value} not found in record")
     
     def find_phone(self, phone):
-        phone_value = phone.value if isinstance(phone, Phone) else phone
+        phone_value = self._get_phone_value(phone)
 
         for p in self.phones:
             if p.value == phone_value:
