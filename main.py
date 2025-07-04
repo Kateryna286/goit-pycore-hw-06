@@ -18,7 +18,7 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        if not (value.isdigit() or len(value) == 10):
+        if not (value.isdigit() and len(value) == 10):
             raise ValueError("Phone number must be a 10-digit number")
         super().__init__(value)
 
@@ -42,12 +42,14 @@ class Record:
                 raise ValueError(f"Phone {phone_value} already exists for this contact.")
 
         self.phones.append(Phone(phone))
+        print(f"Phone {phone_value} added to contact {self.name.value}")
 
     def remove_phone(self, phone):
         phone_value = self._get_phone_value(phone)
 
         for p in self.phones:
             if p.value == phone_value:
+                print(f"Phone {phone_value} removed from contact {self.name.value}")
                 self.phones.remove(p)
                 return
 
@@ -62,6 +64,7 @@ class Record:
 
         for i, p in enumerate(self.phones):
             if p.value == old_phone_value:
+                print(f"Phone {old_phone_value} changed to {new_phone_value} in contact {self.name.value}") 
                 self.phones[i] = Phone(new_phone_value)
                 return
 
@@ -72,6 +75,8 @@ class Record:
 
         for p in self.phones:
             if p.value == phone_value:
+                # print(f"Phone {phone_value} found in contact {self.name.value}")
+                print(f"Phone found: {p.value}")
                 return p
 
         raise ValueError(f"Phone {phone_value} not found in record")
@@ -80,17 +85,21 @@ class Record:
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
-    # реалізація класу
-		pass
+    
+    def add_record(self, record):
+        self.data[record.name.value] = record
+        print(f"Record for '{record.name.value}' added to address book.")
 
-phone = Phone("2345678909")
-john_record = Record("John")
-john_record.add_phone("1234567890")
-john_record.add_phone("0987654321")
-print(john_record)
-john_record.remove_phone("1234567890")
-print(john_record)
-john_record.edit_phone("0987654321", "1112223333")
-print(john_record)
-john_record.find_phone("1112223333")
-print(john_record)
+    def find(self, name):
+        if name in self.data:
+            print(f"Record found: {self.data[name]}")
+            return self.data[name]
+        else:
+            raise ValueError(f"Record with name {name} not found")
+
+    def delete(self, name):
+        if name in self.data:
+            self.data.pop(name)
+            print(f"Record for '{name}' deleted from address book.") 
+        else:
+            raise ValueError(f"Record with name {name} not found")
