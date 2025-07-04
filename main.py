@@ -59,6 +59,15 @@ class Record:
                 return
 
         raise ValueError(f"Phone {old_phone_value} not found in record")
+    
+    def find_phone(self, phone):
+        phone_value = phone.value if isinstance(phone, Phone) else phone
+
+        for p in self.phones:
+            if p.value == phone_value:
+                return p
+
+        raise ValueError(f"Phone {phone_value} not found in record")
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -75,4 +84,6 @@ print(john_record)
 john_record.remove_phone("1234567890")
 print(john_record)
 john_record.edit_phone("0987654321", "1112223333")
+print(john_record)
+john_record.find_phone("1112223333")
 print(john_record)
